@@ -70,21 +70,29 @@ public class ChatImgClient implements ModInitializer {
             System.out.println("DLL!");
         }
         ClientPlayNetworking.registerGlobalReceiver(Identifier.of("chatimg", "img"), (client, handler, buf, responseSender) -> {
-            client.execute(() -> {
-                String message = buf.toString(StandardCharsets.UTF_8);
-                LOGGER.debug(message);
-                String json = message;
-                //System.out.println(json);
-                try {
-                    JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
-                    int imgID = jsonObject.get("id").getAsInt();
-                    if (ChatImgClient.imgMap.containsKey(imgID)) {
-                        Img img = ChatImgClient.imgMap.get(imgID);
-                        img.add(jsonObject.get("index").getAsInt(), jsonObject.get("data").getAsString());
-                        ChatImgClient.imgMap.replace(imgID, img);
-                    } else {
-                        Img img = new Img(jsonObject.get("packageNum").getAsInt(), jsonObject.get("index").getAsInt(), jsonObject.get("data").getAsString());
-                        ChatImgClient.imgMap.put(imgID, img);
+            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            // 然后我们循环判断是否还有可读数据
+            while (buf.isReadable()) {
+                // 如果有，我们就从PacketByteBuf中读取一个字节，并写入到字节缓冲区中
+                byte b = buf.readByte();
+                output.write(b);
+            }
+            // 最后我们把字节缓冲区转换为字节数组，并转换为字符串
+            byte[] bytes = output.toByteArray();
+            String message = new String(bytes, StandardCharsets.UTF_8);
+            String json = message.substring(message.indexOf("{"));
+            //LOGGER.debug(json);
+            System.out.println(json);
+            try {
+                JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+                int imgID = jsonObject.get("id").getAsInt();
+                if (ChatImgClient.imgMap.containsKey(imgID)) {
+                    Img img = ChatImgClient.imgMap.get(imgID);
+                    img.add(jsonObject.get("index").getAsInt(), jsonObject.get("data").getAsString());
+                    ChatImgClient.imgMap.replace(imgID, img);
+                } else {
+                    Img img = new Img(jsonObject.get("packageNum").getAsInt(), jsonObject.get("index").getAsInt(), jsonObject.get("data").getAsString());
+                    ChatImgClient.imgMap.put(imgID, img);
                     }
                     Img img = ChatImgClient.imgMap.get(imgID);
                     if (img.allReceived()) {
@@ -107,7 +115,7 @@ public class ChatImgClient implements ModInitializer {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            });
+
         });
     }
 }
