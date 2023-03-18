@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "chatimg",
+  "version": "${version}",
+  "name": "chatImg",
+  "description": "",
+  "authors": [
+    "MakesYT"
+  ],
+  "contact": {
+    "repo": "https://github.com/13540/chatImg_fabric"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/chatImg/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "top.ncserver.chatimg.ChatImgClient"
+    ]
+  },
+  "mixins": [
+    "chatImg.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.17",
+    "fabric": "*",
+    "minecraft": "1.19.2"
+  }
+}

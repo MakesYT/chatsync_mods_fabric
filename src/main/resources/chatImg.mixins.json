@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "top.ncserver.chatimg.Tools.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+  ],
+  "client": [
+    "ChatComponent",
+    "ChatScreen",
+    "ClipboardMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
