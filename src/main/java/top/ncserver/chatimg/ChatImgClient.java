@@ -11,7 +11,6 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.ncserver.chatimg.Tools.Img;
-import top.ncserver.chatimg.Tools.dll.ClipboardImage;
 
 import java.io.*;
 import java.net.URL;
@@ -84,7 +83,7 @@ public class ChatImgClient implements ModInitializer {
             //LOGGER.debug(json);
             System.out.println(json);
             try {
-                JsonObject jsonObject = new JsonParser().parse(json).getAsJsonObject();
+                JsonObject jsonObject = JsonParser.parseString(json).getAsJsonObject();
                 int imgID = jsonObject.get("id").getAsInt();
                 if (ChatImgClient.imgMap.containsKey(imgID)) {
                     Img img = ChatImgClient.imgMap.get(imgID);

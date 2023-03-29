@@ -23,8 +23,8 @@ public abstract class ChatScreen extends Screen {
 
 
     /**
-     * @author
-     * @reason
+     * @author MakesYT
+     * @reason 原版一次滚动太多, 将Shift行为对换
      */
     @Overwrite
     public boolean mouseScrolled(double mouseX, double mouseY, double amount) {
@@ -32,7 +32,7 @@ public abstract class ChatScreen extends Screen {
         if (this.chatInputSuggestor.mouseScrolled(amount)) {
             return true;
         } else {
-            if (!hasShiftDown()) {
+            if (hasShiftDown()) {
                 amount *= 7.0;
             }
 

@@ -25,31 +25,11 @@ import java.util.Base64;
 import java.util.UUID;
 
 
-/**
- * 注入修改剪切板,支持粘贴图片
- *
- * @author kitUIN
- */
 @Mixin(Clipboard.class)
 public class ClipboardMixin {
 
     private static boolean isWindows() {
         return System.getProperty("os.name").toUpperCase().contains("WINDOWS");
-    }
-
-    private static void copyFile(InputStream inputStream, File file) {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-            byte[] arrayOfByte = new byte[63];
-            int i;
-            while ((i = inputStream.read(arrayOfByte)) > 0) {
-                fileOutputStream.write(arrayOfByte, 0, i);
-            }
-            fileOutputStream.close();
-            inputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Inject(at = @At("RETURN"), method = "getClipboard", cancellable = true)
@@ -69,9 +49,9 @@ public class ClipboardMixin {
                         cir.setReturnValue("");
 
                         MinecraftClient.getInstance().player.sendMessage(Text.of("图片发送中...."));
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        ImageIO.write(image, "png", baos);
-                        byte[] bytes = baos.toByteArray();
+                        ByteArrayOutputStream bass = new ByteArrayOutputStream();
+                        ImageIO.write(image, "png", bass);
+                        byte[] bytes = bass.toByteArray();
                         // Encode byte array to base64 string
                         String base64 = Base64.getEncoder().encodeToString(bytes);
                         // Print base64 string
@@ -90,8 +70,6 @@ public class ClipboardMixin {
                         for (int i = 0; i < split.length; i++) {
                             imgJson.setData(i, split[i]);
                             String s = new Gson().toJson(imgJson);
-
-                            //System.out.println(s);
                             ClientPlayNetworking.send(Identifier.of("chatimg", "img"), new PacketByteBuf(Unpooled.copiedBuffer(s, CharsetUtil.UTF_8)));
 
                         }
